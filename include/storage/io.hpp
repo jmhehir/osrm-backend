@@ -26,7 +26,7 @@ struct HSGRHeader
 static_assert(sizeof(HSGRHeader) == 12, "HSGRHeader is not packed");
 
 // Returns the checksum and the number of nodes and number of edges
-inline HSGRHeader readHSGRHeader(boost::filesystem::ifstream &input_stream)
+HSGRHeader readHSGRHeader(boost::filesystem::ifstream &input_stream)
 {
     const util::FingerPrint fingerprint_valid = util::FingerPrint::GetValid();
     util::FingerPrint fingerprint_loaded;

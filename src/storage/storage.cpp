@@ -1,10 +1,8 @@
 #include "storage/storage.hpp"
-
 #include "storage/io.hpp"
 #include "storage/shared_barriers.hpp"
 #include "storage/shared_datatype.hpp"
 #include "storage/shared_memory.hpp"
-
 #include "contractor/query_edge.hpp"
 #include "extractor/compressed_edge_container.hpp"
 #include "extractor/guidance/turn_instruction.hpp"
