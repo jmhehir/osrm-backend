@@ -15,7 +15,6 @@
 #include "extractor/query_node.hpp"
 #include "storage/io.hpp"
 #include "storage/storage_config.hpp"
-#include "storage/io.hpp"
 #include "engine/geospatial_query.hpp"
 #include "util/graph_loader.hpp"
 #include "util/guidance/turn_lanes.hpp"
