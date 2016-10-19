@@ -541,13 +541,11 @@ class SharedDataFacade final : public BaseDataFacade
 
         std::vector<NodeID> result_nodes;
 
-        result_nodes.reserve(end - begin);
+        result_nodes.resize(end - begin);
 
-        std::for_each(m_geometry_node_list.begin() + begin,
-                      m_geometry_node_list.begin() + end,
-                      [&](const NodeID &node_id) {
-                          result_nodes.emplace_back(node_id);
-                      });
+        std::copy(m_geometry_node_list.begin() + begin,
+                  m_geometry_node_list.begin() + end,
+                  result_nodes.begin());
 
         return result_nodes;
     }
@@ -566,13 +564,11 @@ class SharedDataFacade final : public BaseDataFacade
 
         std::vector<NodeID> result_nodes;
 
-        result_nodes.reserve(end - begin);
+        result_nodes.resize(end - begin);
 
-        std::for_each(m_geometry_node_list.rbegin() + (m_geometry_node_list.size() - end),
-                      m_geometry_node_list.rbegin() + (m_geometry_node_list.size() - begin),
-                      [&](const NodeID &node_id) {
-                          result_nodes.emplace_back(node_id);
-                      });
+        std::copy(m_geometry_node_list.rbegin() + (m_geometry_node_list.size() - end),
+                  m_geometry_node_list.rbegin() + (m_geometry_node_list.size() - begin),
+                  result_nodes.begin());
 
         return result_nodes;
     }
@@ -591,13 +587,11 @@ class SharedDataFacade final : public BaseDataFacade
         const unsigned end = m_geometry_indices.at(id + 1);
 
         std::vector<EdgeWeight> result_weights;
-        result_weights.reserve(end - begin);
+        result_weights.resize(end - begin);
 
-        std::for_each(m_geometry_fwd_weight_list.begin() + begin,
-                      m_geometry_fwd_weight_list.begin() + end,
-                      [&](const EdgeWeight &forward_weight) {
-                          result_weights.emplace_back(forward_weight);
-                      });
+        std::copy(m_geometry_fwd_weight_list.begin() + begin,
+                  m_geometry_fwd_weight_list.begin() + end,
+                  result_weights.begin());
 
         return result_weights;
     }
@@ -618,13 +612,15 @@ class SharedDataFacade final : public BaseDataFacade
         const signed end = m_geometry_indices.at(id + 1) - 1;
 
         std::vector<EdgeWeight> result_weights;
-        result_weights.reserve(end - begin);
+        result_weights.resize(end - begin);
 
-        std::for_each(m_geometry_rev_weight_list.rbegin() + (m_geometry_rev_weight_list.size() - end),
-                      m_geometry_rev_weight_list.rbegin() + (m_geometry_rev_weight_list.size() - begin),
-                      [&](const EdgeWeight &reverse_weight) {
-                          result_weights.emplace_back(reverse_weight);
-                      });
+        std::copy(m_geometry_rev_weight_list.rbegin() + (m_geometry_rev_weight_list.size() - end),
+                  m_geometry_rev_weight_list.rbegin() + (m_geometry_rev_weight_list.size() - begin),
+                  result_weights.begin());
+
+        std::cout << "Should be: " << end - begin << std::endl;
+        std::cout << "Result weights length: " << result_weights.size() << std::endl;
+        std::cout << "Beginning weights length: " << m_geometry_rev_weight_list.size() << std::endl;
 
         return result_weights;
     }
@@ -844,7 +840,7 @@ class SharedDataFacade final : public BaseDataFacade
         const unsigned end = m_geometry_indices.at(id + 1);
 
         std::vector<uint8_t> result_datasources;
-        result_datasources.reserve(end - begin);
+        result_datasources.resize(end - begin);
 
         // If there was no datasource info, return an array of 0's.
         if (m_datasource_list.empty())
@@ -856,10 +852,10 @@ class SharedDataFacade final : public BaseDataFacade
         }
         else
         {
-            std::for_each(
+            std::copy(
                 m_datasource_list.begin() + begin,
                 m_datasource_list.begin() + end,
-                [&](const uint8_t &datasource_id) { result_datasources.push_back(datasource_id); });
+                result_datasources.begin());
         }
 
         return result_datasources;
@@ -883,7 +879,7 @@ class SharedDataFacade final : public BaseDataFacade
         const unsigned end = m_geometry_indices.at(id + 1) - 1;
 
         std::vector<uint8_t> result_datasources;
-        result_datasources.reserve(end - begin);
+        result_datasources.resize(end - begin);
 
         // If there was no datasource info, return an array of 0's.
         if (m_datasource_list.empty())
@@ -895,10 +891,10 @@ class SharedDataFacade final : public BaseDataFacade
         }
         else
         {
-            std::for_each(
+            std::copy(
                 m_datasource_list.rbegin() + (m_datasource_list.size() - end),
                 m_datasource_list.rbegin() + (m_datasource_list.size() - begin),
-                [&](const uint8_t &datasource_id) { result_datasources.push_back(datasource_id); });
+                result_datasources.begin());
         }
 
         return result_datasources;
