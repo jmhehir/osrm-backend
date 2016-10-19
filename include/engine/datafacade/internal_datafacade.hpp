@@ -71,7 +71,6 @@ class InternalDataFacade final : public BaseDataFacade
     InternalDataFacade() {}
 
     unsigned m_check_sum;
-    unsigned m_number_of_nodes;
     std::unique_ptr<QueryGraph> m_query_graph;
     std::string m_timestamp;
 
@@ -893,7 +892,7 @@ class InternalDataFacade final : public BaseDataFacade
 
     double GetMapMatchingMaxSpeed() const override final
     {
-        return m_profile_properties->max_speed_for_map_matching;
+        return m_profile_properties.max_speed_for_map_matching;
     }
 
     BearingClassID GetBearingClassID(const NodeID nid) const override final
