@@ -210,7 +210,7 @@ namespace
 struct Segment final
 {
     OSMNodeID from, to;
-    bool operator==(const Segment &other)
+    bool operator==(const Segment &other) const
     {
         return std::tie(from, to) == std::tie(other.from, other.to);
     }
@@ -226,7 +226,9 @@ struct SegmentSpeedSource final
 {
     Segment segment;
     SpeedSource speed_source;
-    bool operator<(const SegmentSpeedSource &other)
+    // < operator is overloaded here to return a > comparison to be used by the
+    // std::lower_bound() call in the find() function
+    bool operator<(const SegmentSpeedSource &other) const
     {
         return std::tie(segment.from, segment.to) > std::tie(other.segment.from, other.segment.to);
     }
@@ -235,7 +237,7 @@ struct SegmentSpeedSource final
 struct Turn final
 {
     OSMNodeID from, via, to;
-    bool operator==(const Turn &other)
+    bool operator==(const Turn &other) const
     {
         return std::tie(from, via, to) == std::tie(other.from, other.via, other.to);
     }
@@ -250,7 +252,9 @@ struct TurnPenaltySource final
 {
     Turn segment;
     PenaltySource penalty_source;
-    bool operator<(const TurnPenaltySource &other)
+    // < operator is overloaded here to return a > comparison to be used by the
+    // std::lower_bound() call in the find() function
+    bool operator<(const TurnPenaltySource &other) const
     {
         return std::tie(segment.from, segment.via, segment.to) >
                std::tie(other.segment.from, other.segment.via, other.segment.to);
@@ -261,7 +265,7 @@ using SegmentSpeedSourceFlatMap = std::vector<SegmentSpeedSource>;
 
 // Binary Search over a flattened key,val Segment storage
 template <typename FlatMap, typename SegmentKey>
-typename FlatMap::iterator find(FlatMap &map, const SegmentKey &key)
+auto find(const FlatMap &map, const SegmentKey &key)
 {
     const auto last = end(map);
     auto it = std::lower_bound(begin(map), last, key);
