@@ -772,20 +772,24 @@ Storage::ReturnCode Storage::Run(int max_wait)
 
     {
 
-            boost::interprocess::scoped_lock<boost::interprocess::named_upgradable_mutex>
+        boost::interprocess::scoped_lock<boost::interprocess::named_upgradable_mutex>
             current_regions_exclusive_lock;
 
         if (max_wait > 0)
         {
-            util::SimpleLogger().Write() << "Waiting for " << max_wait << " seconds to write new dataset timestamp";
-            auto end_time = boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(max_wait);
+            util::SimpleLogger().Write() << "Waiting for " << max_wait
+                                         << " seconds to write new dataset timestamp";
+            auto end_time = boost::posix_time::microsec_clock::universal_time() +
+                            boost::posix_time::seconds(max_wait);
             current_regions_exclusive_lock =
                 boost::interprocess::scoped_lock<boost::interprocess::named_upgradable_mutex>(
                     std::move(current_regions_lock), end_time);
 
             if (!current_regions_exclusive_lock.owns())
             {
-                util::SimpleLogger().Write(logWARNING) << "Aquiring the lock timed out after " << max_wait << " seconds. Claiming the lock by force.";
+                util::SimpleLogger().Write(logWARNING) << "Aquiring the lock timed out after "
+                                                       << max_wait
+                                                       << " seconds. Claiming the lock by force.";
                 current_regions_lock.unlock();
                 current_regions_lock.release();
                 storage::SharedBarriers::resetCurrentRegions();

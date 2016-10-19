@@ -1,6 +1,6 @@
+#include "engine/guidance/post_processing.hpp"
 #include "extractor/guidance/toolkit.hpp"
 #include "extractor/guidance/turn_instruction.hpp"
-#include "engine/guidance/post_processing.hpp"
 
 #include "engine/guidance/assemble_steps.hpp"
 #include "engine/guidance/lane_processing.hpp"
@@ -842,7 +842,7 @@ std::vector<RouteStep> collapseTurns(std::vector<RouteStep> steps)
                 }
                 else
                 {
-                    //the sliproad turn is incompatible. So we handle it as a turn
+                    // the sliproad turn is incompatible. So we handle it as a turn
                     steps[one_back_index].maneuver.instruction.type = TurnType::Turn;
                 }
             }
@@ -1326,8 +1326,7 @@ std::vector<RouteStep> collapseUseLane(std::vector<RouteStep> steps)
     for (std::size_t step_index = 1; step_index < steps.size(); ++step_index)
     {
         const auto &step = steps[step_index];
-        if (step.maneuver.instruction.type == TurnType::UseLane &&
-            canCollapseUseLane(step))
+        if (step.maneuver.instruction.type == TurnType::UseLane && canCollapseUseLane(step))
         {
             const auto previous = getPreviousIndex(step_index);
             steps[previous] = elongate(std::move(steps[previous]), steps[step_index]);
