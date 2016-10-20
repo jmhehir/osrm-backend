@@ -418,8 +418,8 @@ parse_turn_penalty_lookup_from_csv_files(const std::vector<std::string> &turn_pe
             local.push_back(std::move(val));
         }
 
-        util::SimpleLogger().Write() << "Loaded speed file " << filename << " with " << local.size()
-                                     << " speeds";
+        util::SimpleLogger().Write() << "Loaded penalty file " << filename << " with " << local.size()
+                                     << " turn penalties";
 
         {
             Mutex::scoped_lock _{flatten_mutex};
