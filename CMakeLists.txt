@@ -321,9 +321,11 @@ if(ENABLE_MASON)
   add_dependency_includes(${MASON_PACKAGE_bzip2_INCLUDE_DIRS})
   set(BZIP2_LIBRARIES ${MASON_PACKAGE_bzip2_STATIC_LIBS})
 
-  mason_use(zlib VERSION system)
-  add_dependency_includes(${MASON_PACKAGE_zlib_INCLUDE_DIRS})
-  set(ZLIB_LIBRARY ${MASON_PACKAGE_zlib_LDFLAGS})
+  # todo - fails to download
+  #mason_use(zlib VERSION system)
+  #add_dependency_includes(${MASON_PACKAGE_zlib_INCLUDE_DIRS})
+  #set(ZLIB_LIBRARY ${MASON_PACKAGE_zlib_LDFLAGS})
+  set(ZLIB_LIBRARY "-lz")
 
   mason_use(tbb VERSION 43_20150316)
   add_dependency_includes(${MASON_PACKAGE_tbb_INCLUDE_DIRS})
