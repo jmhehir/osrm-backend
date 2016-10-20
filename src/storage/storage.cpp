@@ -322,12 +322,12 @@ Storage::ReturnCode Storage::Run(int max_wait)
     boost::iostreams::seek(
         geometry_input_stream, number_of_geometries_indices * sizeof(unsigned), BOOST_IOS::cur);
     geometry_input_stream.read((char *)&number_of_compressed_geometries, sizeof(unsigned));
-    shared_layout_ptr->SetBlockSize<NodeID>(
-        SharedDataLayout::GEOMETRIES_NODE_LIST, number_of_compressed_geometries);
-    shared_layout_ptr->SetBlockSize<EdgeWeight>(
-        SharedDataLayout::GEOMETRIES_FWD_WEIGHT_LIST, number_of_compressed_geometries);
-    shared_layout_ptr->SetBlockSize<EdgeWeight>(
-        SharedDataLayout::GEOMETRIES_REV_WEIGHT_LIST, number_of_compressed_geometries);
+    shared_layout_ptr->SetBlockSize<NodeID>(SharedDataLayout::GEOMETRIES_NODE_LIST,
+                                            number_of_compressed_geometries);
+    shared_layout_ptr->SetBlockSize<EdgeWeight>(SharedDataLayout::GEOMETRIES_FWD_WEIGHT_LIST,
+                                                number_of_compressed_geometries);
+    shared_layout_ptr->SetBlockSize<EdgeWeight>(SharedDataLayout::GEOMETRIES_REV_WEIGHT_LIST,
+                                                number_of_compressed_geometries);
 
     // load datasource sizes.  This file is optional, and it's non-fatal if it doesn't
     // exist.
@@ -590,9 +590,8 @@ Storage::ReturnCode Storage::Run(int max_wait)
             (char *)geometries_index_ptr,
             shared_layout_ptr->GetBlockSize(SharedDataLayout::GEOMETRIES_INDEX));
     }
-    NodeID *geometries_node_id_list_ptr =
-        shared_layout_ptr->GetBlockPtr<NodeID, true>(
-            shared_memory_ptr, SharedDataLayout::GEOMETRIES_NODE_LIST);
+    NodeID *geometries_node_id_list_ptr = shared_layout_ptr->GetBlockPtr<NodeID, true>(
+        shared_memory_ptr, SharedDataLayout::GEOMETRIES_NODE_LIST);
 
     geometry_input_stream.read((char *)&temporary_value, sizeof(unsigned));
     BOOST_ASSERT(temporary_value ==
@@ -604,9 +603,8 @@ Storage::ReturnCode Storage::Run(int max_wait)
             (char *)geometries_node_id_list_ptr,
             shared_layout_ptr->GetBlockSize(SharedDataLayout::GEOMETRIES_NODE_LIST));
     }
-    EdgeWeight *geometries_fwd_weight_list_ptr =
-        shared_layout_ptr->GetBlockPtr<EdgeWeight, true>(
-            shared_memory_ptr, SharedDataLayout::GEOMETRIES_FWD_WEIGHT_LIST);
+    EdgeWeight *geometries_fwd_weight_list_ptr = shared_layout_ptr->GetBlockPtr<EdgeWeight, true>(
+        shared_memory_ptr, SharedDataLayout::GEOMETRIES_FWD_WEIGHT_LIST);
 
     BOOST_ASSERT(temporary_value ==
                  shared_layout_ptr->num_entries[SharedDataLayout::GEOMETRIES_FWD_WEIGHT_LIST]);
@@ -617,9 +615,8 @@ Storage::ReturnCode Storage::Run(int max_wait)
             (char *)geometries_fwd_weight_list_ptr,
             shared_layout_ptr->GetBlockSize(SharedDataLayout::GEOMETRIES_FWD_WEIGHT_LIST));
     }
-    EdgeWeight *geometries_rev_weight_list_ptr =
-        shared_layout_ptr->GetBlockPtr<EdgeWeight, true>(
-            shared_memory_ptr, SharedDataLayout::GEOMETRIES_REV_WEIGHT_LIST);
+    EdgeWeight *geometries_rev_weight_list_ptr = shared_layout_ptr->GetBlockPtr<EdgeWeight, true>(
+        shared_memory_ptr, SharedDataLayout::GEOMETRIES_REV_WEIGHT_LIST);
 
     BOOST_ASSERT(temporary_value ==
                  shared_layout_ptr->num_entries[SharedDataLayout::GEOMETRIES_REV_WEIGHT_LIST]);
@@ -802,20 +799,24 @@ Storage::ReturnCode Storage::Run(int max_wait)
 
     {
 
-            boost::interprocess::scoped_lock<boost::interprocess::named_upgradable_mutex>
+        boost::interprocess::scoped_lock<boost::interprocess::named_upgradable_mutex>
             current_regions_exclusive_lock;
 
         if (max_wait > 0)
         {
-            util::SimpleLogger().Write() << "Waiting for " << max_wait << " seconds to write new dataset timestamp";
-            auto end_time = boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(max_wait);
+            util::SimpleLogger().Write() << "Waiting for " << max_wait
+                                         << " seconds to write new dataset timestamp";
+            auto end_time = boost::posix_time::microsec_clock::universal_time() +
+                            boost::posix_time::seconds(max_wait);
             current_regions_exclusive_lock =
                 boost::interprocess::scoped_lock<boost::interprocess::named_upgradable_mutex>(
                     std::move(current_regions_lock), end_time);
 
             if (!current_regions_exclusive_lock.owns())
             {
-                util::SimpleLogger().Write(logWARNING) << "Aquiring the lock timed out after " << max_wait << " seconds. Claiming the lock by force.";
+                util::SimpleLogger().Write(logWARNING) << "Aquiring the lock timed out after "
+                                                       << max_wait
+                                                       << " seconds. Claiming the lock by force.";
                 current_regions_lock.unlock();
                 current_regions_lock.release();
                 storage::SharedBarriers::resetCurrentRegions();

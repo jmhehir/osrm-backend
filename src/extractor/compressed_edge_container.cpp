@@ -81,7 +81,8 @@ void CompressedEdgeContainer::SerializeInternalVector(const std::string &path) c
     BOOST_ASSERT(std::numeric_limits<unsigned>::max() != compressed_geometry_indices);
     geometry_out_stream.write((char *)&compressed_geometry_indices, sizeof(unsigned));
 
-    geometry_out_stream.write((char *)(m_compressed_geometry_index.data()), sizeof(unsigned) * m_compressed_geometry_index.size());
+    geometry_out_stream.write((char *)(m_compressed_geometry_index.data()),
+                              sizeof(unsigned) * m_compressed_geometry_index.size());
 
     // sentinel element
     geometry_out_stream.write((char *)&(compressed_geometries), sizeof(unsigned));
@@ -90,13 +91,16 @@ void CompressedEdgeContainer::SerializeInternalVector(const std::string &path) c
     geometry_out_stream.write((char *)&(compressed_geometries), sizeof(unsigned));
 
     // write compressed geometry node id's
-    geometry_out_stream.write((char *)(m_compressed_geometry_nodes.data()), sizeof(NodeID) * m_compressed_geometry_nodes.size());
+    geometry_out_stream.write((char *)(m_compressed_geometry_nodes.data()),
+                              sizeof(NodeID) * m_compressed_geometry_nodes.size());
 
     // write compressed geometry forward weights
-    geometry_out_stream.write((char *)(m_compressed_geometry_fwd_weights.data()), sizeof(EdgeWeight) * m_compressed_geometry_fwd_weights.size());
+    geometry_out_stream.write((char *)(m_compressed_geometry_fwd_weights.data()),
+                              sizeof(EdgeWeight) * m_compressed_geometry_fwd_weights.size());
 
     // write compressed geometry reverse weights
-    geometry_out_stream.write((char *)(m_compressed_geometry_rev_weights.data()), sizeof(EdgeWeight) * m_compressed_geometry_rev_weights.size());
+    geometry_out_stream.write((char *)(m_compressed_geometry_rev_weights.data()),
+                              sizeof(EdgeWeight) * m_compressed_geometry_rev_weights.size());
 }
 
 // Adds info for a compressed edge to the container.   edge_id_2
@@ -150,7 +154,8 @@ void CompressedEdgeContainer::CompressEdge(const EdgeID edge_id_1,
     BOOST_ASSERT(edge_bucket_id1 == GetPositionForID(edge_id_1));
     BOOST_ASSERT(edge_bucket_id1 < m_compressed_oneway_geometries.size());
 
-    std::vector<OnewayCompressedEdge> &edge_bucket_list1 = m_compressed_oneway_geometries[edge_bucket_id1];
+    std::vector<OnewayCompressedEdge> &edge_bucket_list1 =
+        m_compressed_oneway_geometries[edge_bucket_id1];
 
     // note we don't save the start coordinate: it is implicitly given by edge 1
     // weight1 is the distance to the (currently) last coordinate in the bucket
@@ -221,7 +226,8 @@ void CompressedEdgeContainer::AddUncompressedEdge(const EdgeID edge_id,
     BOOST_ASSERT(edge_bucket_id == GetPositionForID(edge_id));
     BOOST_ASSERT(edge_bucket_id < m_compressed_oneway_geometries.size());
 
-    std::vector<OnewayCompressedEdge> &edge_bucket_list = m_compressed_oneway_geometries[edge_bucket_id];
+    std::vector<OnewayCompressedEdge> &edge_bucket_list =
+        m_compressed_oneway_geometries[edge_bucket_id];
 
     // note we don't save the start coordinate: it is implicitly given by edge_id
     // weight is the distance to the (currently) last coordinate in the bucket
